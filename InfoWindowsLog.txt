@@ -1,0 +1,35 @@
+Les journaux d'événements Windows (Event Viewer) sont l'endroit principal où vous pouvez trouver des informations détaillées sur les événements système, les avertissements et les erreurs, y compris les paramètres réseau et les exécutions de fichiers cmd ou PowerShell. Voici quelques journaux et canaux pertinents :
+
+Journal des applications (Application Log) : Ce journal contient des événements enregistrés par les applications et les programmes. Les exécutions de fichiers cmd ou PowerShell peuvent parfois être enregistrées ici.
+
+Journal système (System Log) : Ce journal contient des événements enregistrés par les composants système de Windows. Vous pouvez trouver des informations sur les paramètres réseau et les modifications dans ce journal.
+
+Journal de sécurité (Security Log) : Ce journal contient des événements liés à la sécurité, tels que les tentatives de connexion réussies et échouées, les modifications de stratégie de sécurité et les audits de fichiers et de dossiers. Les exécutions de fichiers cmd ou PowerShell peuvent être enregistrées ici si l'audit approprié est activé.
+
+Canal Microsoft-Windows-PowerShell/Operational : Ce canal spécifique contient des informations détaillées sur les exécutions de scripts et de commandes PowerShell. Pour activer ce journal, vous devez activer la journalisation des scripts PowerShell à l'aide de la stratégie de groupe ou de la commande suivante :
+
+
+Set-ExecutionPolicy RemoteSigned -Force
+Set-PSScriptRoot -Path "C:\Windows\System32\WindowsPowerShell\v1.0\Logs\"
+Start-Transcript -Path "C:\Windows\System32\WindowsPowerShell\v1.0\Logs\PowerShell_Transcript.txt" -Append
+Canal Microsoft-Windows-Sysmon/Operational : Sysmon (System Monitor) est un outil de surveillance du système qui peut enregistrer des informations détaillées sur les processus, les connexions réseau, les modifications de fichiers et d'autres activités du système. Vous pouvez installer Sysmon à partir du site Web de Microsoft et configurer les règles appropriées pour surveiller les exécutions de fichiers cmd et PowerShell.
+Pour accéder au journal des événements Windows :
+
+Ouvrez le menu Démarrer et recherchez "Journal des événements" ou "Event Viewer".
+Ouvrez l'application "Observateur d'événements".
+Dans le volet de gauche, développez "Journaux Windows" pour accéder aux journaux des applications, du système et de la sécurité.
+Pour accéder aux canaux spécifiques, développez "Journaux d'applications et de services" > "Microsoft" > "Windows".
+Vous pouvez également utiliser des commandes PowerShell pour filtrer et rechercher des événements spécifiques dans les journaux. Par exemple :
+
+
+Get-WinEvent -FilterHashtable @{LogName='Security'; ID=4688} | Where-Object {$_.Message -like "*cmd.exe*"}
+Cette commande recherche les événements d'ID 4688 (Exécution d'un nouveau processus) dans le journal de sécurité et filtre les résultats pour afficher uniquement les exécutions de fichiers cmd.exe.
+
+
+Pour accéder à ces journaux, vous pouvez utiliser l'Observateur d'événements Windows (Event Viewer). Vous pouvez le trouver en recherchant "Event Viewer" dans le menu Démarrer.
+
+De plus, vous pouvez utiliser des commandes PowerShell pour filtrer et afficher les journaux d'événements spécifiques. Par exemple, vous pouvez utiliser la commande Get-EventLog pour récupérer les journaux d'événements.
+
+Pour les scripts PowerShell, vous pouvez activer la journalisation des scripts pour enregistrer chaque fois qu'un script PowerShell est exécuté. Vous pouvez le faire en utilisant la stratégie de groupe "Turn on PowerShell Script Block Logging".
+
+Enfin, pour les commandes CMD, vous pouvez activer l'audit de commande dans la Stratégie de groupe locale ou la Stratégie de groupe. Cela enregistrera les commandes exécutées dans le journal de sécurité.
